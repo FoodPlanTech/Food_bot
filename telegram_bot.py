@@ -3,9 +3,9 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from aiogram.types import InputFile, InputMedia
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
-import random
 from dotenv import load_dotenv
 import os
+import pprint
 # Здесь лишнее нужно будет убрать
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
@@ -22,9 +22,7 @@ dp = Dispatcher(bot)
 foods_photo = ['eda.jpg', 'eda2.jpg','eda3.jpg']
 foods_recipe = ['ПОКУШАЕМ?','ВКУСНО ПОКУШАЕМ?','ОЧЕНЬ ВКУСНО ПОКУШАЕМ?']
 photo = InputFile(foods_photo[0])
-subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
-new_recipe = InlineKeyboardButton('Новый рецепт', callback_data='new_recipe')
-welcome_buttons = InlineKeyboardMarkup(resize_keyboard=True).add(subscribe, new_recipe)
+
 
 a=InlineKeyboardButton('до 1500', callback_data='racion_kb')
 b=InlineKeyboardButton('до 2500', callback_data='racion_kb')
@@ -47,47 +45,52 @@ six_monthes = InlineKeyboardButton('6 мес', callback_data='payment')
 period = InlineKeyboardMarkup(resize_keyboard=True).add(one_month, three_monthes, six_monthes)
 
 # Первые сообщения для клиента--------
-@dp.message_handler(commands=['start']) # Вывод сообщений после /start
+@dp.message_handler(commands='start') # Вывод сообщений после /start
 async def process_start_command(message: types.Message):
-    await message.reply("Добро пожаловать в супер-пупер бот. Мы подберем Вам рецепт")
+    await message.answer("Добро пожаловать в супер-пупер бот. Мы подберем Вам рецепт")
+    subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
+    new_recipe = InlineKeyboardButton('Новый рецепт', callback_data='new_recipe')
+    welcome_buttons = InlineKeyboardMarkup(resize_keyboard=True).add(subscribe, new_recipe)
     await bot.send_photo(message.from_user.id, photo, caption='Рецепт для вас', reply_markup=welcome_buttons)
     click_counter['new_recipe'] = len(recipe) - 1
 
 @dp.callback_query_handler(lambda c: c.data == 'new_recipe')# Отзыв на вторую кнопку. После 3 раз крашится. Надо исправлять
-async def process_callback_new_recipe(call: types.CallbackQuery):
+async def process_callback_new_recipe(cb_query: types.CallbackQuery):
+    pprint.pprint(cb_query['message']['reply_markup'])
     file_path = InputFile(foods_photo[click_counter['new_recipe']])
     nl = "\n"
-    text = f'''{recipe[click_counter['new_recipe']]["title"]}
-Инструкция приготовления:
-{recipe[click_counter['new_recipe']]["guide"]}
-Ингредиенты:
-{"".join([ingredient["title"] + " 30 калорий " + ingredient["price"] + " " +ingredient["price_currency"] + nl for ingredient in recipe[click_counter['new_recipe']]["ingredients"]])}'''
+    text = f"{recipe[click_counter['new_recipe']]['title']}\n"\
+    f"Инструкция приготовления:\n"\
+    f"{recipe[click_counter['new_recipe']]['guide']}\n"\
+    f'Ингредиенты:\n'\
+    f"{''.join([ingredient['title'] + ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency'] + nl for ingredient in recipe[click_counter['new_recipe']]['ingredients']])}"
     file = InputMedia(media=file_path, caption=text)
+    subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
     if click_counter['new_recipe'] == 0:
-        await call.message.edit_media(file,reply_markup=InlineKeyboardMarkup(resize_keyboard=True).add(subscribe))
+        await cb_query.message.edit_media(file,reply_markup=InlineKeyboardMarkup(resize_keyboard=True).add(subscribe))
     else:
-        await call.message.edit_media(file,reply_markup=welcome_buttons)
+        await cb_query.message.edit_media(file, cb_query['message']['reply_markup'])
     click_counter['new_recipe'] -= 1
 
 
 @dp.callback_query_handler(lambda c: c.data == 'subscribe')
-async def choose_calories(callback_query: types.CallbackQuery):
-    await bot.send_message(callback_query.from_user.id , 'Выберете желаемую калорийность', reply_markup=calories_kb)
+async def choose_calories(cb_query: types.CallbackQuery):
+    await cb_query.message.answer('Выберете желаемую калорийность', reply_markup=calories_kb)
 
     
 @dp.callback_query_handler(lambda c: c.data == 'racion_kb')
-async def choose_racion(callback_query: types.CallbackQuery):
-    await bot.send_message(callback_query.from_user.id , 'Выберете рацион', reply_markup=racion_kb)
+async def choose_racion(cb_query: types.CallbackQuery):
+    await cb_query.message.answer('Выберете рацион', reply_markup=racion_kb)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'dishes_kb')
-async def choose_amount(callback_query: types.CallbackQuery):
-    await bot.send_message(callback_query.from_user.id , 'Мы предлагаем вам 3 варианта подписки и описываем каждую...', reply_markup=dishes_kb)
+async def choose_amount(cb_query: types.CallbackQuery):
+    await cb_query.message.answer('Мы предлагаем вам 3 варианта подписки и описываем каждую...', reply_markup=dishes_kb)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'period')
-async def choose_period(callback_query: types.CallbackQuery):
-    await bot.send_message(callback_query.from_user.id , 'Выберете срок и описываем 1месяц за 150р и тд', reply_markup=period)
+async def choose_period(cb_query: types.CallbackQuery):
+    await cb_query.message.answer('Выберете срок и описываем 1месяц за 150р и тд', reply_markup=period)
 
 
 
@@ -100,9 +103,9 @@ async def pre_checkout_query(pre_checkout_query: types.PreCheckoutQuery):
 
 
 @dp.callback_query_handler(lambda c: c.data == 'payment')# Первая кнопка. Покупка
-async def process_callback_subscribe(call: types.CallbackQuery):
+async def process_callback_subscribe(cb_query: types.CallbackQuery):
     await bot.send_invoice(
-    chat_id=call.message.chat.id,
+    chat_id=cb_query.message.chat.id,
     title='Подписка',
     description='Оформляем подписку на канал',
     payload='Покупа через Телеграм бот',
@@ -135,11 +138,28 @@ async def successfull_payment(message: Message):
     purchase_message = message.successful_payment.to_python()
     print(purchase_message)
     purchase_message['user_id'] = message.from_user.id
-    msg = f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.'
-    await message.answer(msg)
+    await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.')
 # Оплата кончилась------
     
 
 if __name__ == '__main__':  
     executor.start_polling(dp)
     
+
+
+
+
+
+
+# ПОТОМ ПОНАДОБИТСЯ
+# from aiogram.utils.exceptions import BotBlocked
+
+# @dp.errors_handler(exception=BotBlocked)
+# async def error_bot_blocked(update: types.Update, exception: BotBlocked):
+#     # Update: объект события от Telegram. Exception: объект исключения
+#     # Здесь можно как-то обработать блокировку, например, удалить пользователя из БД
+#     print(f"Меня заблокировал пользователь!\nСообщение: {update}\nОшибка: {exception}")
+
+#     # Такой хэндлер должен всегда возвращать True,
+#     # если дальнейшая обработка не требуется.
+#     return True
