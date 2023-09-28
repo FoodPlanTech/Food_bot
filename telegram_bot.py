@@ -2,7 +2,6 @@ from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from aiogram.types import InputFile, InputMedia
-
 from aiogram.types import Message, LabeledPrice, PreCheckoutQuery, ContentType
 import random
 from dotenv import load_dotenv
@@ -11,11 +10,10 @@ import os
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
-# import requests
 
-# resp = requests.get('http://v1131340.hosted-by-vdsina.ru:5555/api/v1/recipes/')
-# print(resp.json())
+from requests_for_bot import get_recipes
 
+recipe = get_recipes()
 click_counter = {}
 
 load_dotenv() 
@@ -48,23 +46,24 @@ three_monthes = InlineKeyboardButton('3 мес', callback_data='payment')
 six_monthes = InlineKeyboardButton('6 мес', callback_data='payment') 
 period = InlineKeyboardMarkup(resize_keyboard=True).add(one_month, three_monthes, six_monthes)
 
-
-
-
 # Первые сообщения для клиента--------
 @dp.message_handler(commands=['start']) # Вывод сообщений после /start
 async def process_start_command(message: types.Message):
     await message.reply("Добро пожаловать в супер-пупер бот. Мы подберем Вам рецепт")
     await bot.send_photo(message.from_user.id, photo, caption='Рецепт для вас', reply_markup=welcome_buttons)
-    click_counter['new_recipe'] = 2
-
+    click_counter['new_recipe'] = len(recipe) - 1
 
 @dp.callback_query_handler(lambda c: c.data == 'new_recipe')# Отзыв на вторую кнопку. После 3 раз крашится. Надо исправлять
 async def process_callback_new_recipe(call: types.CallbackQuery):
     file_path = InputFile(foods_photo[click_counter['new_recipe']])
-    recipe = foods_recipe[click_counter['new_recipe']]
-    file = InputMedia(media=file_path, caption=recipe)
-    if click_counter['new_recipe'] == 1:
+    nl = "\n"
+    text = f'''{recipe[click_counter['new_recipe']]["title"]}
+Инструкция приготовления:
+{recipe[click_counter['new_recipe']]["guide"]}
+Ингредиенты:
+{"".join([ingredient["title"] + " 30 калорий " + ingredient["price"] + " " +ingredient["price_currency"] + nl for ingredient in recipe[click_counter['new_recipe']]["ingredients"]])}'''
+    file = InputMedia(media=file_path, caption=text)
+    if click_counter['new_recipe'] == 0:
         await call.message.edit_media(file,reply_markup=InlineKeyboardMarkup(resize_keyboard=True).add(subscribe))
     else:
         await call.message.edit_media(file,reply_markup=welcome_buttons)
@@ -134,8 +133,8 @@ async def process_callback_subscribe(call: types.CallbackQuery):
 @dp.message_handler(content_types=ContentType.SUCCESSFUL_PAYMENT) # Процесс после оплаты
 async def successfull_payment(message: Message):
     purchase_message = message.successful_payment.to_python()
-    for key, val in purchase_message.items():
-        print(f'{key} = {val}')
+    print(purchase_message)
+    purchase_message['user_id'] = message.from_user.id
     msg = f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.'
     await message.answer(msg)
 # Оплата кончилась------
