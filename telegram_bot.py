@@ -26,11 +26,11 @@ foods_recipe = ['ПОКУШАЕМ?','ВКУСНО ПОКУШАЕМ?','ОЧЕНЬ
 photo = InputFile(foods_photo[0])
 
 
-
 # Первые сообщения для клиента--------
 @dp.message_handler(commands='start') # Вывод сообщений после /start
 async def process_start_command(message: types.Message):
-    await message.answer("Добро пожаловать в супер-пупер бот. Мы подберем Вам рецепт")
+    await message.answer("Добро пожаловать в FoodPlan бот! \nУ нас есть для вас тысячи рецептов блюд на любой вкус.\n"\
+                        "С подпиской на наш сервис вам больше не придется думать о том, что приготовить, это мы берем на себя!")
     subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
     new_recipe = InlineKeyboardButton('Новый рецепт', callback_data='new_recipe')
     welcome_buttons = InlineKeyboardMarkup(resize_keyboard=True).add(subscribe, new_recipe)
@@ -58,22 +58,22 @@ async def process_callback_new_recipe(cb_query: types.CallbackQuery):
 
 @dp.callback_query_handler(lambda c: c.data == 'subscribe')
 async def choose_calories(cb_query: types.CallbackQuery):
-    await cb_query.message.answer('Выберете желаемую калорийность', reply_markup=calories_kb)
+    await cb_query.message.answer('Выберите желаемую калорийность', reply_markup=calories_kb)
 
     
 @dp.callback_query_handler(lambda c: c.data == 'racion_kb')
 async def choose_racion(cb_query: types.CallbackQuery):
-    await cb_query.message.answer('Выберете рацион', reply_markup=racion_kb)
+    await cb_query.message.answer('Выберите рацион', reply_markup=racion_kb)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'dishes_kb')
 async def choose_amount(cb_query: types.CallbackQuery):
-    await cb_query.message.answer('Мы предлагаем вам 3 варианта подписки и описываем каждую...', reply_markup=dishes_kb)
+    await cb_query.message.answer('Мы предлагаем вам 3 варианта подписки и выберите количество рецептов ...', reply_markup=dishes_kb)
 
 
 @dp.callback_query_handler(lambda c: c.data == 'period')
 async def choose_period(cb_query: types.CallbackQuery):
-    await cb_query.message.answer('Выберете срок и описываем 1месяц за 150р и тд', reply_markup=period)
+    await cb_query.message.answer('Выберите срок и описываем 1месяц за 150р и тд', reply_markup=period)
 
 
 
