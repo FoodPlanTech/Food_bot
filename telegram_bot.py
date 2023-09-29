@@ -10,6 +10,8 @@ import pprint
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
+import urllib.request
+
 
 from requests_for_bot import get_recipes
 from keyboards import calories_kb, racion_kb, dishes_kb, period
@@ -21,36 +23,39 @@ click_counter = {}
 load_dotenv() 
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)   
-foods_photo = ['eda.jpg', 'eda2.jpg','eda3.jpg']
-foods_recipe = ['ПОКУШАЕМ?','ВКУСНО ПОКУШАЕМ?','ОЧЕНЬ ВКУСНО ПОКУШАЕМ?']
-photo = InputFile(foods_photo[0])
 
-
-# Первые сообщения для клиента--------
-@dp.message_handler(commands='start') # Вывод сообщений после /start
-async def process_start_command(message: types.Message):
-    await message.answer("Добро пожаловать в FoodPlan бот! \nУ нас есть для вас тысячи рецептов блюд на любой вкус.\n"\
-                        "С подпиской на наш сервис вам больше не придется думать о том, что приготовить, это мы берем на себя!")
-    subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
-    new_recipe = InlineKeyboardButton('Новый рецепт', callback_data='new_recipe')
-    welcome_buttons = InlineKeyboardMarkup(resize_keyboard=True).add(subscribe, new_recipe)
-    await bot.send_photo(message.from_user.id, photo, caption='Рецепт для вас', reply_markup=welcome_buttons)
-    click_counter['new_recipe'] = len(recipe) - 1
-
-@dp.callback_query_handler(lambda c: c.data == 'new_recipe')# Отзыв на вторую кнопку. После 3 раз крашится. Надо исправлять
-async def process_callback_new_recipe(cb_query: types.CallbackQuery):
-    pprint.pprint(cb_query['message']['reply_markup'])
-    file_path = InputFile(foods_photo[click_counter['new_recipe']])
+def get_card():
     nl = "\n"
     text = f"{recipe[click_counter['new_recipe']]['title']}\n"\
     f"Инструкция приготовления:\n"\
     f"{recipe[click_counter['new_recipe']]['guide']}\n"\
     f'Ингредиенты:\n'\
     f"{''.join([ingredient['title'] + ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency'] + nl for ingredient in recipe[click_counter['new_recipe']]['ingredients']])}"
-    file = InputMedia(media=file_path, caption=text)
+    imgURL = recipe[click_counter['new_recipe']]['image']
+    urllib.request.urlretrieve(imgURL, "local-filename.jpg")# Надо не только Jpg сделать
+    return text
+
+# Первые сообщения для клиента--------
+@dp.message_handler(commands='start') # Вывод сообщений после /start
+async def process_start_command(message: types.Message):
+    await message.answer("Добро пожаловать в FoodPlan бот! \nУ нас есть для вас тысячи рецептов блюд на любой вкус.\n"\
+                        "С подпиской на наш сервис вам больше не придется думать о том, что приготовить, это мы берем на себя!")
+    click_counter['new_recipe'] = len(recipe) - 1
+    text = get_card()
+    subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
+    new_recipe = InlineKeyboardButton('Новый рецепт', callback_data='new_recipe')
+    welcome_buttons = InlineKeyboardMarkup(resize_keyboard=True).add(subscribe, new_recipe)
+    await bot.send_photo(message.from_user.id, photo=open("local-filename.jpg",'rb'), caption=text, reply_markup=welcome_buttons)
+    click_counter['new_recipe'] -= 1
+    
+
+@dp.callback_query_handler(lambda c: c.data == 'new_recipe')# Отзыв на вторую кнопку. После 3 раз крашится. Надо исправлять
+async def process_callback_new_recipe(cb_query: types.CallbackQuery):
+    text = get_card()
+    file = InputMedia(media=InputFile('local-filename.jpg'), caption=text)
     subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
     if click_counter['new_recipe'] == 0:
-        await cb_query.message.edit_media(file,reply_markup=InlineKeyboardMarkup(resize_keyboard=True).add(subscribe))
+        await cb_query.message.edit_media(file, reply_markup=InlineKeyboardMarkup(resize_keyboard=True).add(subscribe))
     else:
         await cb_query.message.edit_media(file, cb_query['message']['reply_markup'])
     click_counter['new_recipe'] -= 1
