@@ -8,7 +8,8 @@ def get_recipes(id):
             'telegram_id': id
             }
         response = requests.get('http://v1131340.hosted-by-vdsina.ru:5555/api/v1/current-recipe/', params=payload)
-        print(response.url)
+        response.raise_for_status()
+        return response.json()
     else:
         response = requests.get('http://v1131340.hosted-by-vdsina.ru:5555/api/v1/teasers')
     response.raise_for_status()
@@ -24,9 +25,6 @@ def send_id(id):
     'telegram_id': id
         }
     response_post = requests.post(url, data=payload)
-<<<<<<< Updated upstream
-    response_post.raise_for_status()
-=======
     response_post.raise_for_status()
 
 
@@ -45,4 +43,3 @@ def send_id(id):
 #    response_post = requests.post(url, data=payload)
 #    response_post.raise_for_status()
 
->>>>>>> Stashed changes

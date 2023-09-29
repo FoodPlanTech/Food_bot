@@ -19,13 +19,24 @@ def get_card(id):
     if id:
         id = 123123123
     recipe = get_recipes(id)
-    text = f"{recipe[click_counter['new_recipe']]['title']}\n"\
-    f"Инструкция приготовления:\n"\
-    f"{recipe[click_counter['new_recipe']]['guide']}\n"\
-    f'Ингредиенты:\n'\
-    f"{''.join([ingredient['title'] + ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency'] + nl for ingredient in recipe[click_counter['new_recipe']]['ingredients']])}"
-    imgURL = recipe[click_counter['new_recipe']]['image']
-    urllib.request.urlretrieve(imgURL, "local-filename.jpg")# Надо не только Jpg сделать
+    print(recipe)
+    print(click_counter['new_recipe'])
+    if id:
+        text = f"{recipe['title']}\n"\
+        f"Инструкция приготовления:\n"\
+        f"{recipe['guide']}\n"\
+        f'Ингредиенты:\n'\
+        f"{''.join([ingredient['title'] + ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency'] + nl for ingredient in recipe['ingredients']])}"
+        # imgURL = recipe['image']
+        # print(imgURL)
+    else:
+        text = f"{recipe[click_counter['new_recipe']]['title']}\n"\
+        f"Инструкция приготовления:\n"\
+        f"{recipe[click_counter['new_recipe']]['guide']}\n"\
+        f'Ингредиенты:\n'\
+        f"{''.join([ingredient['title'] + ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency'] + nl for ingredient in recipe[click_counter['new_recipe']]['ingredients']])}"
+        imgURL = recipe[click_counter['new_recipe']]['image']
+        urllib.request.urlretrieve(imgURL, "local-filename.jpg")# Надо не только Jpg сделать
     return text
 
 

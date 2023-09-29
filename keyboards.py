@@ -1,11 +1,9 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-<<<<<<< Updated upstream
-=======
+
 # from requests_for_bot import get_preferences
 import requests
 
 
->>>>>>> Stashed changes
 
 select_start_buttons = InlineKeyboardMarkup(inline_keyboard=[
     [
@@ -85,8 +83,6 @@ select_dishes = InlineKeyboardMarkup(inline_keyboard=[
     ]
 ])
 
-<<<<<<< Updated upstream
-=======
 select_recipe = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
@@ -110,8 +106,6 @@ select_recipe = InlineKeyboardMarkup(inline_keyboard=[
 # three_dishes = InlineKeyboardButton('Красная', callback_data='period') 
 # dishes_kb = InlineKeyboardMarkup(resize_keyboard=True).add(one_dish, two_dishes, three_dishes)
 
-
->>>>>>> Stashed changes
 select_period = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
