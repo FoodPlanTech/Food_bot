@@ -1,4 +1,11 @@
+from aiogram.types import ReplyKeyboardRemove, \
+    ReplyKeyboardMarkup, KeyboardButton, \
+    InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from requests_for_bot import get_preferences
+import requests
+
+
 
 select_start_buttons = InlineKeyboardMarkup(inline_keyboard=[
     [
@@ -77,6 +84,20 @@ select_dishes = InlineKeyboardMarkup(inline_keyboard=[
         )
     ]
 ])
+
+preferences = get_preferences()
+preferences_list =[]
+for pref in preferences:
+        preferences_list.append([InlineKeyboardButton(text = pref['title'], callback_data = pref['id'])])
+        racion_kb = InlineKeyboardMarkup(inline_keyboard = preferences_list)
+        print(racion_kb)
+select_racion = racion_kb
+
+one_dish = InlineKeyboardButton('Белая', callback_data='period')
+two_dishes = InlineKeyboardButton('Синяя', callback_data='period')
+three_dishes = InlineKeyboardButton('Красная', callback_data='period') 
+dishes_kb = InlineKeyboardMarkup(resize_keyboard=True).add(one_dish, two_dishes, three_dishes)
+
 
 select_period = InlineKeyboardMarkup(inline_keyboard=[
     [
