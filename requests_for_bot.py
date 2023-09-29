@@ -1,6 +1,6 @@
 import requests
-import collections  
 # import pprint
+
 
 def get_recipes():
     response = requests.get('http://v1131340.hosted-by-vdsina.ru:5555/api/v1/teasers')
@@ -8,8 +8,13 @@ def get_recipes():
     cards_for_recipe = []
     for recipe in response.json():
         cards_for_recipe.append(recipe)
-    
     return cards_for_recipe
-#     pprint.pprint(cards_for_recipe[0]['image'])
 
-# get_recipes()
+
+def send_id(id):
+    url = 'http://v1131340.hosted-by-vdsina.ru:5555/api/v1/tg-accounts/'
+    payload = {
+    'telegram_id': id
+        }
+    response_post = requests.post(url, data=payload)
+    response_post.raise_for_status()
