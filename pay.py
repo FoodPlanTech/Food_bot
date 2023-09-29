@@ -3,7 +3,7 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery
 from aiogram.dispatcher import Dispatcher
 from dotenv import load_dotenv
 import os
-
+from keyboards import select_recipe
 
 load_dotenv()
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
@@ -46,4 +46,4 @@ async def successfull_payment(message: Message):
     purchase_message = message.successful_payment.to_python()
     print(purchase_message)
     purchase_message['user_id'] = message.from_user.id
-    await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.')
+    await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.', reply_markup=select_recipe)

@@ -10,12 +10,15 @@ from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 
 
-recipe = get_recipes()
+
 click_counter = {}
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)
-def get_card():
-    nl = "\n"
+def get_card(id):
+    nl = '\n'
+    if id:
+        id = 123123123
+    recipe = get_recipes(id)
     text = f"{recipe[click_counter['new_recipe']]['title']}\n"\
     f"Инструкция приготовления:\n"\
     f"{recipe[click_counter['new_recipe']]['guide']}\n"\
@@ -27,7 +30,7 @@ def get_card():
 
 
 async def process_callback_new_recipe(cb_query: types.CallbackQuery):
-    text = get_card()
+    text = get_card(None)
     subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
     file = InputMedia(media=InputFile('local-filename.jpg'), caption=text)
     if click_counter['new_recipe'] == 0:
@@ -40,8 +43,8 @@ async def process_callback_new_recipe(cb_query: types.CallbackQuery):
 async def process_start_command(message: types.Message):
     await message.answer("Добро пожаловать в FoodPlan бот! \nУ нас есть для вас тысячи рецептов блюд на любой вкус.\n"\
                         "С подпиской на наш сервис вам больше не придется думать о том, что приготовить, это мы берем на себя!")
-    click_counter['new_recipe'] = len(recipe) - 1
-    text = get_card()
+    click_counter['new_recipe'] = 1
+    text = get_card(None)
     await bot.send_photo(message.from_user.id, photo=open("local-filename.jpg",'rb'), caption=text, reply_markup=select_start_buttons)
     click_counter['new_recipe'] -= 1
     url = 'http://v1131340.hosted-by-vdsina.ru:5555/api/v1/tg-accounts/'
@@ -66,6 +69,9 @@ async def choose_amount(cb_query: types.CallbackQuery):
 
 async def choose_period(cb_query: types.CallbackQuery):
     await cb_query.message.answer('Выберите срок и описываем 1месяц за 150р и тд', reply_markup=select_period)
+
+async def choose_recipe(cb_query: types.CallbackQuery):
+    await cb_query.message.answer(get_card(cb_query.message.from_user.id))
 
 
 if __name__ == '__main__':  
