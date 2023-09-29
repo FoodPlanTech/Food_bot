@@ -8,13 +8,12 @@ import random
 from dotenv import load_dotenv
 import os
 # Здесь лишнее нужно будет убрать
+
 from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
 
 
-
- 
 calories = [{'id': 1, 'text': 'до 1500'},
           {'id': 2, 'text': 'до 2500'},
           {'id': 3, 'text': 'от 2500'},]
