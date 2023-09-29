@@ -7,7 +7,7 @@ import os
 from pay import process_callback_subscribe, pre_checkout_query,\
       successfull_payment
 from basics import choose_calories, process_start_command,\
-    process_callback_new_recipe, choose_amount, choose_period, choose_racion
+    process_callback_new_recipe, choose_amount, choose_period, choose_racion,choose_recipe
 
 
 load_dotenv()
@@ -22,6 +22,7 @@ dp.register_callback_query_handler(choose_period, lambda c: c.data == 'period')
 dp.register_callback_query_handler(process_callback_subscribe, lambda c: c.data == 'payment')
 dp.register_pre_checkout_query_handler(pre_checkout_query, lambda query: True)
 dp.register_message_handler(successfull_payment, content_types=ContentType.SUCCESSFUL_PAYMENT)
+dp.register_callback_query_handler(choose_recipe, lambda c: c.data == 'recipe')
 
 
 if __name__ == '__main__':
