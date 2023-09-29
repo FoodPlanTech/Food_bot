@@ -11,7 +11,7 @@ from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
 import urllib.request
-
+import requests
 
 from requests_for_bot import get_recipes
 from keyboards import calories_kb, racion_kb, dishes_kb, period
@@ -47,6 +47,13 @@ async def process_start_command(message: types.Message):
     welcome_buttons = InlineKeyboardMarkup(resize_keyboard=True).add(subscribe, new_recipe)
     await bot.send_photo(message.from_user.id, photo=open("local-filename.jpg",'rb'), caption=text, reply_markup=welcome_buttons)
     click_counter['new_recipe'] -= 1
+    url = 'http://v1131340.hosted-by-vdsina.ru:5555/api/v1/tg-accounts/'
+    payload = {
+    'telegram_id': message.from_user.id
+        }
+    response_post = requests.post(url, data=payload)
+    response_post.raise_for_status()
+
     
 
 @dp.callback_query_handler(lambda c: c.data == 'new_recipe')# Отзыв на вторую кнопку. После 3 раз крашится. Надо исправлять
@@ -151,4 +158,3 @@ if __name__ == '__main__':
 #     # Такой хэндлер должен всегда возвращать True,
 #     # если дальнейшая обработка не требуется.
 
-#     return True
