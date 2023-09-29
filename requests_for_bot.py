@@ -10,6 +10,6 @@ def get_recipes():
         cards_for_recipe.append(recipe)
     
     return cards_for_recipe
-#     pprint.pprint(cards_for_recipe[0]['title'])
+#     pprint.pprint(cards_for_recipe[0]['image'])
 
 # get_recipes()
