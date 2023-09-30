@@ -4,6 +4,8 @@ from aiogram.dispatcher import Dispatcher
 from dotenv import load_dotenv
 import os
 from keyboards import select_recipe
+from requests_for_bot import send_subscriber_information
+
 
 load_dotenv()
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
@@ -44,6 +46,6 @@ async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
 
 async def successfull_payment(message: Message):
     purchase_message = message.successful_payment.to_python()
-    print(purchase_message)
+    send_subscriber_information()
     purchase_message['user_id'] = message.from_user.id
     await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.', reply_markup=select_recipe)

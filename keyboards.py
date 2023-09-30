@@ -3,14 +3,13 @@ from aiogram.types import ReplyKeyboardRemove, \
     InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from requests_for_bot import get_preferences
-import requests
 
 
 
 # from requests_for_bot import get_preferences
 import requests
 
-
+racion_id_buttons=[]
 
 select_start_buttons = InlineKeyboardMarkup(inline_keyboard=[
     [
@@ -48,26 +47,26 @@ select_calories = InlineKeyboardMarkup(inline_keyboard=[
     ],
 ])
 
-select_racion = InlineKeyboardMarkup(inline_keyboard=[
-    [
-        InlineKeyboardButton(
-            text='Вегитарианское меню',
-            callback_data='dishes_kb'
-        )
-    ],
-    [
-        InlineKeyboardButton(
-            text='Сытно и полезно',
-            callback_data='dishes_kb'
-        )
-    ],
-    [
-        InlineKeyboardButton(
-            text='Быстро и вкусно',
-            callback_data='dishes_kb'
-        )
-    ]
-])
+# select_racion = InlineKeyboardMarkup(inline_keyboard=[
+#     [
+#         InlineKeyboardButton(
+#             text='Вегетерианское',
+#             callback_data='dishes_kb1'
+#         )
+#     ],
+#     [
+#         InlineKeyboardButton(
+#             text='Сытное',
+#             callback_data='dishes_kb2'
+#         )
+#     ],
+#     # [
+#     #     InlineKeyboardButton(
+#     #         text='Быстро и вкусно',
+#     #         callback_data='dishes_kb'
+#     #     )
+#     # ]
+# ])
 
 select_dishes = InlineKeyboardMarkup(inline_keyboard=[
     [
@@ -90,8 +89,6 @@ select_dishes = InlineKeyboardMarkup(inline_keyboard=[
     ]
 ])
 
-
-
 select_recipe = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
@@ -102,13 +99,14 @@ select_recipe = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-# preferences = get_preferences()
-# preferences_list =[]
-# for pref in preferences:
-#         preferences_list.append([InlineKeyboardButton(text = pref['title'], callback_data = pref['id'])])
-#         racion_kb = InlineKeyboardMarkup(inline_keyboard = preferences_list)
-#         print(racion_kb)
-# select_racion = racion_kb
+preferences = get_preferences()
+preferences_list =[]
+for pref in preferences:
+        racion_id_buttons.append(str(pref['id']))
+        preferences_list.append([InlineKeyboardButton(text = pref['title'], callback_data = pref['id'])])
+        racion_kb = InlineKeyboardMarkup(inline_keyboard = preferences_list)
+        print(racion_kb)
+select_racion = racion_kb
 
 # one_dish = InlineKeyboardButton('Белая', callback_data='period')
 # two_dishes = InlineKeyboardButton('Синяя', callback_data='period')
