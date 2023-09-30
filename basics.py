@@ -1,6 +1,6 @@
 from aiogram import Bot, types
 from keyboards import select_start_buttons, select_calories, select_racion, select_dishes, select_period
-from requests_for_bot import get_recipes #remember_choice
+from requests_for_bot import get_recipes, send_id#remember_choice
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import InputFile, InputMedia
 import requests
@@ -58,7 +58,7 @@ async def process_start_command(message: types.Message):
     text = get_card(message.from_user.id, False)
     await bot.send_photo(message.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text, reply_markup=select_start_buttons)
     click_counter['new_recipe'] -= 1
-
+    send_id(message.from_user.id)
 
 async def choose_calories(cb_query: types.CallbackQuery):
     await cb_query.message.answer('Выберите желаемую калорийность', reply_markup=select_calories)

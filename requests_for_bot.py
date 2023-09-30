@@ -16,7 +16,6 @@ def get_recipes(id):
     cards_for_recipe = []
     for recipe in response.json():
         cards_for_recipe.append(recipe)
-    print(len(cards_for_recipe))
     return cards_for_recipe
 
 
