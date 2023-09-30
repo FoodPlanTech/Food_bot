@@ -2,7 +2,7 @@ from aiogram.types import ReplyKeyboardRemove, \
     ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from requests_for_bot import get_preferences
+from requests_for_bot import get_preferences, get_subscribtions
 
 
 
@@ -114,23 +114,11 @@ select_racion = racion_kb
 # dishes_kb = InlineKeyboardMarkup(resize_keyboard=True).add(one_dish, two_dishes, three_dishes)
 
 
-select_period = InlineKeyboardMarkup(inline_keyboard=[
-    [
-        InlineKeyboardButton(
-            text='1 мес',
-            callback_data='payment'
-        )
-    ],
-    [
-        InlineKeyboardButton(
-            text='3 мес',
-            callback_data='payment'
-        )
-    ],
-    [
-        InlineKeyboardButton(
-            text='6 мес',
-            callback_data='payment'
-        )
-    ]
-])
+subscribtions = get_subscribtions()
+subscribtions_list = []
+for subscription in subscribtions:
+        #subscribtion_id_buttons.append(str(subscription['id']))
+        subscribtions_list.append([InlineKeyboardButton(text=subscription['title'], callback_data=subscription['id'])])
+        period = InlineKeyboardMarkup(inline_keyboard=subscribtions_list)
+select_period = period
+
