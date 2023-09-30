@@ -41,8 +41,8 @@ async def process_callback_subscribe(cb_query: types.CallbackQuery):
         allow_sending_without_reply=True,
         reply_markup=None
     )
-    preference_ids = cb_query.data
-    return preference_ids
+    subscription_id = cb_query.data
+    return subscription_id
 
     
 async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
