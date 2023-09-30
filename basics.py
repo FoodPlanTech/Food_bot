@@ -14,10 +14,11 @@ from aiogram.utils import executor
 click_counter = {}
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)
-def get_card(id, bool):
+def get_card(telegram_id, bool):
+    print(telegram_id)
     nl = '\n'
     if bool:
-        recipe = get_recipes(id)
+        recipe = get_recipes(telegram_id)
     # ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency']
         text = f"{recipe['title']}\n"\
         f"Инструкция приготовления:\n"\
@@ -41,7 +42,7 @@ def get_card(id, bool):
 
 
 async def process_callback_new_recipe(cb_query: types.CallbackQuery):
-    text = get_card(cb_query.message.from_user.id, False)
+    text = get_card(cb_query.from_user.id, False)
     subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
     file = InputMedia(media=InputFile("./media/local-filename.jpg"), caption=text)
     if click_counter['new_recipe'] == 0:
@@ -84,7 +85,7 @@ async def choose_period(cb_query: types.CallbackQuery):
     await cb_query.message.answer('Выберите срок и описываем 1месяц за 150р и тд', reply_markup=select_period)
 
 async def choose_recipe(cb_query: types.CallbackQuery):
-    text = get_card(cb_query.message.from_user.id, True)
+    text = get_card(cb_query.from_user.id, True)
     await bot.send_photo(cb_query.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text)
 
 

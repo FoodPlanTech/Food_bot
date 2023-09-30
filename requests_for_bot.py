@@ -4,6 +4,7 @@ import requests
 
 def get_recipes(id):
     if id:
+        print(id)
         payload = {
             'telegram_id': id
             }
