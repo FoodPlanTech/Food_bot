@@ -78,7 +78,7 @@ async def choose_amount(cb_query: types.CallbackQuery):
    # remember_choice(cb_query.data)
     await cb_query.message.answer('Мы предлагаем вам 3 варианта подписки и выберите количество рецептов ...', reply_markup=select_dishes)
     client_pref_id = cb_query.data
-    print('client_pref_id =', client_pref_id)
+    # print('client_pref_id =', client_pref_id)
 
 
 async def choose_period(cb_query: types.CallbackQuery):

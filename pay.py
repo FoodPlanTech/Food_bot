@@ -12,6 +12,7 @@ bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)
 
 async def process_callback_subscribe(cb_query: types.CallbackQuery):
+    print(cb_query.data)
     await bot.send_invoice(
         chat_id=cb_query.message.chat.id,
         title='Подписка',
@@ -40,7 +41,7 @@ async def process_callback_subscribe(cb_query: types.CallbackQuery):
         allow_sending_without_reply=True,
         reply_markup=None
     )
-
+    
 async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 

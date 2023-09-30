@@ -103,8 +103,8 @@ select_recipe = InlineKeyboardMarkup(inline_keyboard=[
 preferences = get_preferences()
 preferences_list =[]
 for pref in preferences:
-        racion_id_buttons.append(str(pref['id']))
-        preferences_list.append([InlineKeyboardButton(text = pref['title'], callback_data = pref['id'])])
+        racion_id_buttons.append(f'pref{pref["id"]}')
+        preferences_list.append([InlineKeyboardButton(text = pref['title'], callback_data = f'pref{pref["id"]}')])
         racion_kb = InlineKeyboardMarkup(inline_keyboard = preferences_list)
 select_racion = racion_kb
 
@@ -117,8 +117,8 @@ select_racion = racion_kb
 subscribtions = get_subscribtions()
 subscribtions_list = []
 for subscription in subscribtions:
-        subscribtion_id_buttons.append(str(subscription['id']))
-        subscribtions_list.append([InlineKeyboardButton(text=subscription['title'], callback_data=subscription['id'])])
+        subscribtion_id_buttons.append(f"sub{subscription['id']}")
+        subscribtions_list.append([InlineKeyboardButton(text=subscription['title'], callback_data=f"sub{subscription['id']}")])
         period = InlineKeyboardMarkup(inline_keyboard=subscribtions_list)
 select_period = period
 
