@@ -4,12 +4,15 @@ from aiogram.dispatcher import Dispatcher
 from dotenv import load_dotenv
 import os
 from keyboards import select_recipe
+from requests_for_bot import send_subscriber_information
+
 
 load_dotenv()
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)
 
 async def process_callback_subscribe(cb_query: types.CallbackQuery):
+    print(cb_query.data)
     await bot.send_invoice(
         chat_id=cb_query.message.chat.id,
         title='Подписка',
@@ -38,12 +41,13 @@ async def process_callback_subscribe(cb_query: types.CallbackQuery):
         allow_sending_without_reply=True,
         reply_markup=None
     )
-
+    
 async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 async def successfull_payment(message: Message):
-    purchase_message = message.successful_payment.to_python()
-    print(purchase_message)
-    purchase_message['user_id'] = message.from_user.id
+    # purchase_message = message.successful_payment.to_python()
+    print(message.from_user.id)
+    send_subscriber_information(message.from_user.id,[2],1)
+    # purchase_message['user_id'] = message.from_user.id
     await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.', reply_markup=select_recipe)
