@@ -46,6 +46,14 @@ def send_subscriber_information():
     response_post = requests.post(url, data=payload)
     response_post.raise_for_status()
     return
+
+
+def get_subscribtions():
+    response = requests.get('http://v1131340.hosted-by-vdsina.ru:5555/api/v1/subscriptions/')
+    response.raise_for_status()
+    subscribtions = response.json()
+    return (subscribtions)
+
 #def post_preference():
 #    url = 'http://v1131340.hosted-by-vdsina.ru:5555/api/v1/foodplans/'   
 #    payload = {
