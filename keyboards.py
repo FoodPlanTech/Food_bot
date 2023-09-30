@@ -10,6 +10,7 @@ from requests_for_bot import get_preferences, get_subscribtions
 import requests
 
 racion_id_buttons=[]
+subscribtion_id_buttons=[]
 
 select_start_buttons = InlineKeyboardMarkup(inline_keyboard=[
     [
@@ -105,7 +106,6 @@ for pref in preferences:
         racion_id_buttons.append(str(pref['id']))
         preferences_list.append([InlineKeyboardButton(text = pref['title'], callback_data = pref['id'])])
         racion_kb = InlineKeyboardMarkup(inline_keyboard = preferences_list)
-        print(racion_kb)
 select_racion = racion_kb
 
 # one_dish = InlineKeyboardButton('Белая', callback_data='period')
@@ -117,7 +117,7 @@ select_racion = racion_kb
 subscribtions = get_subscribtions()
 subscribtions_list = []
 for subscription in subscribtions:
-        #subscribtion_id_buttons.append(str(subscription['id']))
+        subscribtion_id_buttons.append(str(subscription['id']))
         subscribtions_list.append([InlineKeyboardButton(text=subscription['title'], callback_data=subscription['id'])])
         period = InlineKeyboardMarkup(inline_keyboard=subscribtions_list)
 select_period = period
