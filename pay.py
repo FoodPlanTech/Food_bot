@@ -46,7 +46,8 @@ async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 async def successfull_payment(message: Message):
-    purchase_message = message.successful_payment.to_python()
-    send_subscriber_information()
-    purchase_message['user_id'] = message.from_user.id
+    # purchase_message = message.successful_payment.to_python()
+    print(message.from_user.id)
+    send_subscriber_information(message.from_user.id,[2],1)
+    # purchase_message['user_id'] = message.from_user.id
     await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.', reply_markup=select_recipe)

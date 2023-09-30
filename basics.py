@@ -14,12 +14,10 @@ from aiogram.utils import executor
 click_counter = {}
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)
-def get_card(id):
+def get_card(id, bool):
     nl = '\n'
-    if id:
-        id = 250714819
-    recipe = get_recipes(id)
-    if id:
+    if bool:
+        recipe = get_recipes(id)
     # ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency']
         text = f"{recipe['title']}\n"\
         f"Инструкция приготовления:\n"\
@@ -30,6 +28,7 @@ def get_card(id):
         urllib.request.urlretrieve(imgURL, "./media/local-filename.jpg")# Надо не только Jpg сделать
         # print(imgURL)
     else:
+        recipe = get_recipes(None)
     #' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency'] +
         text = f"{recipe[click_counter['new_recipe']]['title']}\n"\
         f"Инструкция приготовления:\n"\
@@ -42,7 +41,7 @@ def get_card(id):
 
 
 async def process_callback_new_recipe(cb_query: types.CallbackQuery):
-    text = get_card(None)
+    text = get_card(cb_query.message.from_user.id, False)
     subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
     file = InputMedia(media=InputFile("./media/local-filename.jpg"), caption=text)
     if click_counter['new_recipe'] == 0:
@@ -56,7 +55,7 @@ async def process_start_command(message: types.Message):
     await message.answer("Добро пожаловать в FoodPlan бот! \nУ нас есть для вас тысячи рецептов блюд на любой вкус.\n"\
                         "С подпиской на наш сервис вам больше не придется думать о том, что приготовить, это мы берем на себя!")
     click_counter['new_recipe'] = 2
-    text = get_card(None)
+    text = get_card(message.from_user.id, False)
     await bot.send_photo(message.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text, reply_markup=select_start_buttons)
     click_counter['new_recipe'] -= 1
 
@@ -85,9 +84,8 @@ async def choose_period(cb_query: types.CallbackQuery):
     await cb_query.message.answer('Выберите срок и описываем 1месяц за 150р и тд', reply_markup=select_period)
 
 async def choose_recipe(cb_query: types.CallbackQuery):
-    text = get_card(cb_query.message.from_user.id)
+    text = get_card(cb_query.message.from_user.id, True)
     await bot.send_photo(cb_query.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text)
-    # await cb_query.message.answer()
 
 
 if __name__ == '__main__':  
