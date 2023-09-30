@@ -13,12 +13,6 @@ pref_id = ''.join(c for c in preference_ids if c.isdecimal())
 
 
 
-pr = 'pref1'
-pr1 = ''.join(c for c in pr if c.isdecimal())
-print(pr)
-
-
-
 def get_recipes(id):
     if id:
         payload = {
