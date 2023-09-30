@@ -59,7 +59,9 @@ async def process_start_command(message: types.Message):
     text = get_card(message.from_user.id, False)
     await bot.send_photo(message.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text, reply_markup=select_start_buttons)
     click_counter['new_recipe'] -= 1
-    send_id(message.from_user.id)
+    telegram_id = message.from_user.id
+    send_id(telegram_id)
+    return telegram_id
 
 async def choose_calories(cb_query: types.CallbackQuery):
     await cb_query.message.answer('Выберите желаемую калорийность', reply_markup=select_calories)
@@ -77,8 +79,8 @@ async def choose_amount(cb_query: types.CallbackQuery):
     # print(text)
    # remember_choice(cb_query.data)
     await cb_query.message.answer('Мы предлагаем вам 3 варианта подписки и выберите количество рецептов ...', reply_markup=select_dishes)
-    client_pref_id = cb_query.data
-    # print('client_pref_id =', client_pref_id)
+    preference_ids = cb_query.data
+    return preference_ids
 
 
 async def choose_period(cb_query: types.CallbackQuery):

@@ -41,6 +41,9 @@ async def process_callback_subscribe(cb_query: types.CallbackQuery):
         allow_sending_without_reply=True,
         reply_markup=None
     )
+    preference_ids = cb_query.data
+    return preference_ids
+
     
 async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
