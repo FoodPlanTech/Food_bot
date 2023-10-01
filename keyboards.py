@@ -52,9 +52,9 @@ select_calories = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-amount = [{'id': 1, 'title': 'Белая'},
-          {'id': 2, 'title': 'Синяя'},
-          {'id': 3, 'title': 'Красная'},
+amount = [{'id': 1, 'title': '1 рецепт'},
+          {'id': 2, 'title': '2 рецепта'},
+          {'id': 3, 'title': '3 рецепта'},
           ]
 amount_list =[]
 for quantity in amount:
