@@ -1,5 +1,5 @@
 from aiogram import Bot
-from aiogram.dispatcher import Dispatcher
+from aiogram.dispatcher import Dispatcher, filters
 from aiogram.utils import executor
 from aiogram.types import ContentType
 from dotenv import load_dotenv
@@ -24,7 +24,7 @@ dp.register_callback_query_handler(choose_period, lambda c: c.data == 'period')#
 dp.register_callback_query_handler(process_callback_subscribe, lambda c: c.data in subscribtion_id_buttons)
 dp.register_pre_checkout_query_handler(pre_checkout_query, lambda query: True)
 dp.register_message_handler(successfull_payment, content_types=ContentType.SUCCESSFUL_PAYMENT)
-dp.register_callback_query_handler(choose_recipe, lambda c: c.text == 'Получить рецепт')
+dp.register_message_handler(choose_recipe, lambda c: c.text =='Получить рецепт')
 dp.register_callback_query_handler(set_rating, lambda c: c.data in ['like', 'dislike'])
 
 
