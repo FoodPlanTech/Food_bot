@@ -57,7 +57,7 @@ async def process_callback_new_recipe(cb_query: types.CallbackQuery):
 
 
 async def process_start_command(message: types.Message):
-    await message.answer("Добро пожаловать в FoodPlan бот! \nУ нас есть для вас тысячи рецептов блюд на любой вкус.\n"\
+    await message.answer("Добро пожаловать в FoodPlan бот! \n\nУ нас есть для вас тысячи рецептов блюд на любой вкус 🤌\n\n"\
                         "С подпиской на наш сервис вам больше не придется думать о том, что приготовить, это мы берем на себя!")
     click_counter['new_recipe'] = 2
     text = get_card(message.from_user.id, False)
@@ -67,21 +67,21 @@ async def process_start_command(message: types.Message):
     send_id(telegram_id)
 
 async def choose_calories(cb_query: types.CallbackQuery):
-    await cb_query.message.answer('Выберите желаемую калорийность', reply_markup=select_calories)
+    await cb_query.message.answer('Мы подстроимся под ваш рацион 😊\n\nВыберите вашу обычную норму калорий в день', reply_markup=select_calories)
 
 
 async def choose_racion(cb_query: types.CallbackQuery):
-    await cb_query.message.answer('Выберите рацион', reply_markup=select_racion)
+    await cb_query.message.answer('Какие рецепты вам хотелось бы получать? 🌮🥗🍝', reply_markup=select_racion)
 
 
 async def choose_amount(cb_query: types.CallbackQuery):
-    await cb_query.message.answer('Мы предлагаем вам 3 варианта подписки и выберите количество рецептов ...', reply_markup=select_dishes)
+    await cb_query.message.answer('Отлично!👌 Выберите сколько рецептов вы хотите получать?', reply_markup=select_dishes)
     preference_ids = cb_query.data
     remember_choice['preference_ids'] = preference_ids
 
 
 async def choose_period(cb_query: types.CallbackQuery):
-    await cb_query.message.answer('Выберите срок и описываем 1месяц за 150р и тд', reply_markup=select_period)
+    await cb_query.message.answer('Выберите срок подписки 🙃', reply_markup=select_period)
     amount = cb_query.data
     remember_choice['recipes_count'] = amount
 

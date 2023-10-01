@@ -87,13 +87,13 @@ select_dishes = select_dishes
 select_rating = InlineKeyboardMarkup(inline_keyboard=[
     [
         InlineKeyboardButton(
-            text='Like',
+            text='Like❤️',
             callback_data='like'
         )
     ],
      [
         InlineKeyboardButton(
-            text='Dislike',
+            text='Dislike🤡',
             callback_data='dislike'
         )
     ]
