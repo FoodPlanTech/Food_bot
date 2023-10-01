@@ -83,7 +83,7 @@ async def choose_amount(cb_query: types.CallbackQuery):
 async def choose_period(cb_query: types.CallbackQuery):
     await cb_query.message.answer('Выберите срок и описываем 1месяц за 150р и тд', reply_markup=select_period)
     amount = cb_query.data
-    print('клиент хочет получать столько-то рецептов: ', amount)
+    remember_choice['recipes_count'] = amount
 
 async def choose_recipe(cb_query: types.CallbackQuery):
     text = get_card(cb_query.from_user.id, True)

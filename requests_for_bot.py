@@ -47,12 +47,14 @@ def get_preferences():
 # def remember_choice()
 
 
-def send_subscriber_information(telegram_id, pref_id, sub_id):
+def send_subscriber_information(telegram_id, pref_id, sub_id, amount):
     url = 'http://v1131340.hosted-by-vdsina.ru:5555/api/v1/payments/'   
     payload = {
         "telegram_id": telegram_id,
         "preference_ids": pref_id, 
-        "subscription_id": sub_id
+        "subscription_id": sub_id,
+        "recipes_count": amount
+
     }
     print(payload)
     response_post = requests.post(url, data=payload)
