@@ -52,8 +52,10 @@ async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
 async def successfull_payment(message: Message):
     print(message.from_user.id, \
           re.findall('\d+', remember_choice['preference_ids'])[0],\
-          remember_choice['subscription_id'])
+          remember_choice['subscription_id'],\
+          [re.findall('\d+', remember_choice['recipes_count'])[0]])
     send_subscriber_information(message.from_user.id,
                                 [re.findall('\d+', remember_choice['preference_ids'])[0]],
-                                remember_choice['subscription_id'], [re.findall('\d+', remember_choice['recipes_count'])[0]] )
+                                remember_choice['subscription_id'], 
+                                re.findall('\d+', remember_choice['recipes_count'])[0])
     await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.', reply_markup=keyboard)

@@ -9,16 +9,20 @@ import os
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from dotenv import load_dotenv
-
+import re
+import time
 
 
 remember_choice={}
 click_counter = {}
 recipe_id =[]
-
+tries = [0]
 load_dotenv()
+
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)
+
+
 def get_card(telegram_id, bool):
     nl = '\n'
     if bool:
@@ -44,6 +48,18 @@ def get_card(telegram_id, bool):
         urllib.request.urlretrieve(imgURL, "./media/local-filename.jpg")# Надо не только Jpg сделать
     return text
 
+
+def get_recipes_count(count, telegram_id, bool):
+    clicks = tries.pop() #0
+    if count - clicks > 0:
+        text = get_card(telegram_id, bool)
+    else:
+        tries.append(0) 
+        time.sleep(60)
+        return 'Вы можете получить рецепт'
+    clicks +=1 # 1
+    tries.append(clicks)    
+    return text
 
 async def process_callback_new_recipe(cb_query: types.CallbackQuery):
     text = get_card(cb_query.from_user.id, False)
@@ -86,8 +102,12 @@ async def choose_period(cb_query: types.CallbackQuery):
     remember_choice['recipes_count'] = amount
 
 async def choose_recipe(cb_query: types.CallbackQuery):
-    text = get_card(cb_query.from_user.id, True)
+    number = int(re.findall('\d+', remember_choice['recipes_count'])[0])
+    text = get_recipes_count(number, cb_query.from_user.id, True)
     await bot.send_photo(cb_query.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text, reply_markup=select_rating)
+    if number - tries[0] == 0:
+        await bot.send_message(cb_query.from_user.id, 'ПОДОЖДИТЕ 1 МИНУТУ! 🙃')
+        # await cb_query.message.answer('ПОДОЖДИТЕ 1 МИНУТУ! 🙃')
 
 async def set_rating(cb_query: types.CallbackQuery):
     inner_buttons = []
