@@ -1,14 +1,14 @@
 import requests
-from pay import process_callback_subscribe
-from basics import process_start_command, choose_amount
+# from pay import process_callback_subscribe
+# from basics import process_start_command, choose_amount
 # import pprint
 
-subscription_id = process_callback_subscribe()
-telegram_id = process_start_command()
-preference_ids = choose_amount()
+# subscription_id = process_callback_subscribe()
+# telegram_id = process_start_command()
+# preference_ids = choose_amount()
 
-sub_id = ''.join(c for c in subscription_id if c.isdecimal())
-pref_id = ''.join(c for c in preference_ids if c.isdecimal())
+# sub_id = ''.join(c for c in subscription_id if c.isdecimal())
+# pref_id = ''.join(c for c in preference_ids if c.isdecimal())
 
 
 
@@ -54,7 +54,9 @@ def send_subscriber_information(telegram_id, pref_id, sub_id):
         "preference_ids": pref_id, 
         "subscription_id": sub_id
     }
+    print(payload)
     response_post = requests.post(url, data=payload)
+    print(response_post.url)
     response_post.raise_for_status()
     return
 
@@ -64,6 +66,18 @@ def get_subscribtions():
     response.raise_for_status()
     subscribtions = response.json()
     return (subscribtions)
+
+def send_rating(value, telegram_id, recipe_id):
+    if value == 'like':
+        url = 'http://v1131340.hosted-by-vdsina.ru:5555/api/v1/likes/'
+    else:
+        url = 'http://v1131340.hosted-by-vdsina.ru:5555/api/v1/dislikes/'
+    payload = {
+        'telegram_id': telegram_id, 
+        'recipe_id': recipe_id}
+    response_post = requests.post(url, data=payload)
+    print(response_post.url)
+    response_post.raise_for_status()
 
 #def post_preference():
 #    url = 'http://v1131340.hosted-by-vdsina.ru:5555/api/v1/foodplans/'   

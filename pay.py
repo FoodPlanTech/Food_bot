@@ -3,16 +3,19 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery
 from aiogram.dispatcher import Dispatcher
 from dotenv import load_dotenv
 import os
-from keyboards import select_recipe
+from keyboards import select_recipe, subscription_price
 from requests_for_bot import send_subscriber_information
-
+from basics import remember_choice
+import re
 
 load_dotenv()
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)
 
 async def process_callback_subscribe(cb_query: types.CallbackQuery):
-    print(cb_query.data)
+    subscription_id = cb_query.data
+    remember_choice['subscription_id'] = re.findall('\d+',subscription_id)[0]
+    price = subscription_price[int(remember_choice['subscription_id']) - 1] * 1000
     await bot.send_invoice(
         chat_id=cb_query.message.chat.id,
         title='Подписка',
@@ -23,7 +26,7 @@ async def process_callback_subscribe(cb_query: types.CallbackQuery):
         prices=[
             LabeledPrice(
                 label='Подписка на канал',
-                amount=10000
+                amount= price
             )
         ],
         max_tip_amount=500,
@@ -41,16 +44,16 @@ async def process_callback_subscribe(cb_query: types.CallbackQuery):
         allow_sending_without_reply=True,
         reply_markup=None
     )
-    subscription_id = cb_query.data
-    return subscription_id
 
     
 async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 async def successfull_payment(message: Message):
-    # purchase_message = message.successful_payment.to_python()
-    # print(message.from_user.id)
-    send_subscriber_information(message.from_user.id,[2],1)
-    # purchase_message['user_id'] = message.from_user.id
+    print(message.from_user.id, \
+          re.findall('\d+', remember_choice['preference_ids'])[0],\
+          remember_choice['subscription_id'])
+    send_subscriber_information(message.from_user.id,
+                                [re.findall('\d+', remember_choice['preference_ids'])[0]],
+                                remember_choice['subscription_id'])
     await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.', reply_markup=select_recipe)
