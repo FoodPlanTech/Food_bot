@@ -3,7 +3,7 @@ from aiogram.types import Message, LabeledPrice, PreCheckoutQuery
 from aiogram.dispatcher import Dispatcher
 from dotenv import load_dotenv
 import os
-from keyboards import select_recipe, subscription_price
+from keyboards import keyboard, subscription_price
 from requests_for_bot import send_subscriber_information
 from basics import remember_choice
 import re
@@ -56,4 +56,4 @@ async def successfull_payment(message: Message):
     send_subscriber_information(message.from_user.id,
                                 [re.findall('\d+', remember_choice['preference_ids'])[0]],
                                 remember_choice['subscription_id'])
-    await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.', reply_markup=select_recipe)
+    await message.answer(f'Спасибо за оплату {message.successful_payment.total_amount // 100} {message.successful_payment.currency}.', reply_markup=keyboard)

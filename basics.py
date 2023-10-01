@@ -75,12 +75,6 @@ async def choose_racion(cb_query: types.CallbackQuery):
 
 
 async def choose_amount(cb_query: types.CallbackQuery):
-    # text = ''
-    # for inline_keyboard in cb_query.message.reply_markup.inline_keyboard:
-    #    if inline_keyboard[0]['callback_data'] == cb_query.data:
-    #        text = inline_keyboard[0]['text']
-   # remember_choice(cb_query.data)
-   
     await cb_query.message.answer('Мы предлагаем вам 3 варианта подписки и выберите количество рецептов ...', reply_markup=select_dishes)
     preference_ids = cb_query.data
     remember_choice['preference_ids'] = preference_ids
@@ -99,7 +93,6 @@ async def set_rating(cb_query: types.CallbackQuery):
         if inline_keyboard[0]['callback_data'] == cb_query.data:
             inner_buttons.append(inline_keyboard[0])
     await bot.edit_message_reply_markup(cb_query.message.chat.id, cb_query.message.message_id, reply_markup=InlineKeyboardMarkup(resize_keyboard=True).add(inner_buttons[0]))
-    print(cb_query.data)
     send_rating(cb_query.data, cb_query.from_user.id, recipe_id.pop())
 
 if __name__ == '__main__':  

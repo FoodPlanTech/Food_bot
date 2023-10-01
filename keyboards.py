@@ -49,26 +49,6 @@ select_calories = InlineKeyboardMarkup(inline_keyboard=[
     ],
 ])
 
-# select_racion = InlineKeyboardMarkup(inline_keyboard=[
-#     [
-#         InlineKeyboardButton(
-#             text='Вегетерианское',
-#             callback_data='dishes_kb1'
-#         )
-#     ],
-#     [
-#         InlineKeyboardButton(
-#             text='Сытное',
-#             callback_data='dishes_kb2'
-#         )
-#     ],
-#     # [
-#     #     InlineKeyboardButton(
-#     #         text='Быстро и вкусно',
-#     #         callback_data='dishes_kb'
-#     #     )
-#     # ]
-# ])
 
 select_dishes = InlineKeyboardMarkup(inline_keyboard=[
     [
@@ -87,15 +67,6 @@ select_dishes = InlineKeyboardMarkup(inline_keyboard=[
         InlineKeyboardButton(
             text='Красная',
             callback_data='period'
-        )
-    ]
-])
-
-select_recipe = InlineKeyboardMarkup(inline_keyboard=[
-    [
-        InlineKeyboardButton(
-            text='Получить рецент',
-            callback_data='recipe'
         )
     ]
 ])
@@ -138,3 +109,6 @@ for subscription in subscribtions:
         period = InlineKeyboardMarkup(inline_keyboard=subscribtions_list)
 select_period = period
 
+keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
+button_1 = KeyboardButton(text='Получить рецепт')
+keyboard.add(button_1)
