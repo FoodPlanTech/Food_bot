@@ -12,6 +12,8 @@ import requests
 racion_id_buttons=[]
 subscribtion_id_buttons=[]
 subscription_price=[]
+amount_id_buttons=[]
+
 
 select_start_buttons = InlineKeyboardMarkup(inline_keyboard=[
     [
@@ -50,26 +52,37 @@ select_calories = InlineKeyboardMarkup(inline_keyboard=[
 ])
 
 
-select_dishes = InlineKeyboardMarkup(inline_keyboard=[
-    [
-        InlineKeyboardButton(
-            text='Белая',
-            callback_data='period'
-        )
-    ],
-    [
-        InlineKeyboardButton(
-            text='Синяя',
-            callback_data='period'
-        )
-    ],
-    [
-        InlineKeyboardButton(
-            text='Красная',
-            callback_data='period'
-        )
-    ]
-])
+amount = [{'id': 1, 'title': 'Белая'},
+          {'id': 2, 'title': 'Синяя'},
+          {'id': 3, 'title': 'Красная'},
+          ]
+amount_list =[]
+for quantity in amount:
+        amount_id_buttons.append(f'quantity{quantity["id"]}')
+        amount_list.append([InlineKeyboardButton(text=quantity['title'], callback_data=f'quantity{quantity["id"]}')])
+        select_dishes = InlineKeyboardMarkup(inline_keyboard=amount_list)
+select_dishes = select_dishes
+
+# select_dishes = InlineKeyboardMarkup(inline_keyboard=[
+#     [
+#         InlineKeyboardButton(
+#             text='Белая',
+#             callback_data='period'
+#         )
+#     ],
+#     [
+#         InlineKeyboardButton(
+#             text='Синяя',
+#             callback_data='period'
+#         )
+#     ],
+#     [
+#         InlineKeyboardButton(
+#             text='Красная',
+#             callback_data='period'
+#         )
+#     ]
+# ])
 
 select_rating = InlineKeyboardMarkup(inline_keyboard=[
     [
