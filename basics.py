@@ -1,6 +1,6 @@
 from aiogram import Bot, types
 from keyboards import select_start_buttons, select_calories, select_racion, select_dishes, select_period
-from requests_for_bot import get_recipes #remember_choice
+from requests_for_bot import get_recipes, send_id#remember_choice
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import InputFile, InputMedia
 import requests
@@ -14,10 +14,11 @@ from aiogram.utils import executor
 click_counter = {}
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)
-def get_card(id, bool):
+def get_card(telegram_id, bool):
+    print(telegram_id)
     nl = '\n'
     if bool:
-        recipe = get_recipes(id)
+        recipe = get_recipes(telegram_id)
     # ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency']
         text = f"{recipe['title']}\n"\
         f"Инструкция приготовления:\n"\
@@ -41,7 +42,7 @@ def get_card(id, bool):
 
 
 async def process_callback_new_recipe(cb_query: types.CallbackQuery):
-    text = get_card(cb_query.message.from_user.id, False)
+    text = get_card(cb_query.from_user.id, False)
     subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
     file = InputMedia(media=InputFile("./media/local-filename.jpg"), caption=text)
     if click_counter['new_recipe'] == 0:
@@ -58,7 +59,9 @@ async def process_start_command(message: types.Message):
     text = get_card(message.from_user.id, False)
     await bot.send_photo(message.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text, reply_markup=select_start_buttons)
     click_counter['new_recipe'] -= 1
-
+    telegram_id = message.from_user.id
+    send_id(telegram_id)
+    return telegram_id
 
 async def choose_calories(cb_query: types.CallbackQuery):
     await cb_query.message.answer('Выберите желаемую калорийность', reply_markup=select_calories)
@@ -69,14 +72,22 @@ async def choose_racion(cb_query: types.CallbackQuery):
 
 
 async def choose_amount(cb_query: types.CallbackQuery):
+    # text = ''
+    # for inline_keyboard in cb_query.message.reply_markup.inline_keyboard:
+    #    if inline_keyboard[0]['callback_data'] == cb_query.data:
+    #        text = inline_keyboard[0]['text']
+    # print(text)
+   # remember_choice(cb_query.data)
     await cb_query.message.answer('Мы предлагаем вам 3 варианта подписки и выберите количество рецептов ...', reply_markup=select_dishes)
+    preference_ids = cb_query.data
+    return preference_ids
 
 
 async def choose_period(cb_query: types.CallbackQuery):
     await cb_query.message.answer('Выберите срок и описываем 1месяц за 150р и тд', reply_markup=select_period)
 
 async def choose_recipe(cb_query: types.CallbackQuery):
-    text = get_card(cb_query.message.from_user.id, True)
+    text = get_card(cb_query.from_user.id, True)
     await bot.send_photo(cb_query.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text)
 
 

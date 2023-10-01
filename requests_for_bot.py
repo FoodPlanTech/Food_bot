@@ -1,5 +1,16 @@
 import requests
+from pay import process_callback_subscribe
+from basics import process_start_command, choose_amount
 # import pprint
+
+subscription_id = process_callback_subscribe()
+telegram_id = process_start_command()
+preference_ids = choose_amount()
+
+sub_id = ''.join(c for c in subscription_id if c.isdecimal())
+pref_id = ''.join(c for c in preference_ids if c.isdecimal())
+
+
 
 
 def get_recipes(id):
@@ -16,7 +27,6 @@ def get_recipes(id):
     cards_for_recipe = []
     for recipe in response.json():
         cards_for_recipe.append(recipe)
-    print(len(cards_for_recipe))
     return cards_for_recipe
 
 
@@ -36,12 +46,13 @@ def get_preferences():
 
 # def remember_choice()
 
-def send_subscriber_information(telegram_id, preference_ids, subscription_id):
+
+def send_subscriber_information(telegram_id, pref_id, sub_id):
     url = 'http://v1131340.hosted-by-vdsina.ru:5555/api/v1/payments/'   
     payload = {
         "telegram_id": telegram_id,
-        "preference_ids": preference_ids, 
-        "subscription_id": subscription_id
+        "preference_ids": pref_id, 
+        "subscription_id": sub_id
     }
     response_post = requests.post(url, data=payload)
     response_post.raise_for_status()
