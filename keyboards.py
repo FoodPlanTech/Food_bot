@@ -11,6 +11,7 @@ import requests
 
 racion_id_buttons=[]
 subscribtion_id_buttons=[]
+subscription_price=[]
 
 select_start_buttons = InlineKeyboardMarkup(inline_keyboard=[
     [
@@ -99,6 +100,20 @@ select_recipe = InlineKeyboardMarkup(inline_keyboard=[
     ]
 ])
 
+select_rating = InlineKeyboardMarkup(inline_keyboard=[
+    [
+        InlineKeyboardButton(
+            text='Like',
+            callback_data='like'
+        )
+    ],
+     [
+        InlineKeyboardButton(
+            text='Dislike',
+            callback_data='dislike'
+        )
+    ]
+])
 
 preferences = get_preferences()
 preferences_list =[]
@@ -118,6 +133,7 @@ subscribtions = get_subscribtions()
 subscribtions_list = []
 for subscription in subscribtions:
         subscribtion_id_buttons.append(f"sub{subscription['id']}")
+        subscription_price.append(subscription['price']["amount"])
         subscribtions_list.append([InlineKeyboardButton(text=subscription['title'], callback_data=f"sub{subscription['id']}")])
         period = InlineKeyboardMarkup(inline_keyboard=subscribtions_list)
 select_period = period
