@@ -25,27 +25,26 @@ dp = Dispatcher(bot)
 
 def get_card(telegram_id, bool):
     nl = '\n'
-    if bool:
-        recipe = get_recipes(telegram_id)
-        recipe_id.append(recipe['id'])
-    # ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency']
-        text = f"{recipe['title']}\n"\
-        f"Инструкция приготовления:\n"\
-        f"{recipe['guide']}\n"\
-        f'Ингредиенты:\n'\
-        f"{''.join([ingredient['title']  + nl for ingredient in recipe['ingredients']])}"
-        imgURL = recipe['image']
-        urllib.request.urlretrieve(imgURL, "./media/local-filename.jpg")# Надо не только Jpg сделать
-    else:
-        recipe = get_recipes(None)
-    #' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency'] +
-        text = f"{recipe[click_counter['new_recipe']]['title']}\n"\
-        f"Инструкция приготовления:\n"\
-        f"{recipe[click_counter['new_recipe']]['guide']}\n"\
-        f'Ингредиенты:\n'\
-        f"{''.join([ingredient['title'] +  nl for ingredient in recipe[click_counter['new_recipe']]['ingredients']])}"
-        imgURL = recipe[click_counter['new_recipe']]['image']
-        urllib.request.urlretrieve(imgURL, "./media/local-filename.jpg")# Надо не только Jpg сделать
+    # if bool:
+    #     recipe = get_recipes(telegram_id)
+    #     recipe_id.append(recipe['id'])
+    # # ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency']
+    #     text = f"{recipe['title']}\n"\
+    #     f"Инструкция приготовления:\n"\
+    #     f"{recipe['guide']}\n"\
+    #     f'Ингредиенты:\n'\
+    #     f"{''.join([ingredient['title']  + nl for ingredient in recipe['ingredients']])}"
+    #     imgURL = recipe['image']
+    #     urllib.request.urlretrieve(imgURL, "./media/local-filename.jpg")# Надо не только Jpg сделать
+    # else:
+    recipe = get_recipes(telegram_id)
+    text = f"{recipe[click_counter['new_recipe']]['title']}\n"\
+    f"Инструкция приготовления:\n"\
+    f"{recipe[click_counter['new_recipe']]['guide']}\n"\
+    f'Ингредиенты:\n'\
+    f"{''.join([ingredient['title'] + ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency'] + nl for ingredient in recipe[click_counter['new_recipe']]['ingredients']])}"
+    imgURL = recipe[click_counter['new_recipe']]['image']
+    urllib.request.urlretrieve(imgURL, "./media/local-filename.jpg")# Надо не только Jpg сделать
     return text
 
 
@@ -62,7 +61,7 @@ def get_recipes_count(count, telegram_id, bool):
     return text
 
 async def process_callback_new_recipe(cb_query: types.CallbackQuery):
-    text = get_card(cb_query.from_user.id, False)
+    text = get_card(None, False)
     subscribe = InlineKeyboardButton('Оформить подписку', callback_data='subscribe')
     file = InputMedia(media=InputFile("./media/local-filename.jpg"), caption=text)
     if click_counter['new_recipe'] == 0:
@@ -76,7 +75,7 @@ async def process_start_command(message: types.Message):
     await message.answer("Добро пожаловать в FoodPlan бот! \n\nУ нас есть для вас тысячи рецептов блюд на любой вкус 🤌\n\n"\
                         "С подпиской на наш сервис вам больше не придется думать о том, что приготовить, это мы берем на себя!")
     click_counter['new_recipe'] = 2
-    text = get_card(message.from_user.id, False)
+    text = get_card(None, False)
     await bot.send_photo(message.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text, reply_markup=select_start_buttons)
     click_counter['new_recipe'] -= 1
     telegram_id = message.from_user.id
@@ -106,7 +105,7 @@ async def choose_recipe(cb_query: types.CallbackQuery):
     text = get_recipes_count(number, cb_query.from_user.id, True)
     await bot.send_photo(cb_query.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text, reply_markup=select_rating)
     if number - tries[0] == 0:
-        await bot.send_message(cb_query.from_user.id, 'ПОДОЖДИТЕ 1 МИНУТУ! 🙃')
+        await bot.send_message(cb_query.from_user.id, 'ПОДОЖДИТЕ СУТКИ🙃')
         # await cb_query.message.answer('ПОДОЖДИТЕ 1 МИНУТУ! 🙃')
 
 async def set_rating(cb_query: types.CallbackQuery):

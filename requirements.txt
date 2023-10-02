@@ -1,3 +1,4 @@
-
+python-dotenv==1.0.0
 aiogram==2.23.1
 aiogram-utils==0.1.4
+requests==2.27.1
