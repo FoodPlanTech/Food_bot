@@ -3,7 +3,6 @@ from keyboards import select_start_buttons, select_calories, select_racion, sele
 from requests_for_bot import get_recipes, send_id, send_rating
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import InputFile, InputMedia
-import requests
 import urllib.request
 import os
 from aiogram.dispatcher import Dispatcher
@@ -18,25 +17,12 @@ click_counter = {}
 recipe_id =[]
 tries = [0]
 load_dotenv()
-
 bot = Bot(token=os.environ['TELEGRAM_TOKEN'])
 dp = Dispatcher(bot)
 
 
 def get_card(telegram_id, bool):
     nl = '\n'
-    # if bool:
-    #     recipe = get_recipes(telegram_id)
-    #     recipe_id.append(recipe['id'])
-    # # ' 30 калорий ' + ingredient['price'] + ' ' + ingredient['price_currency']
-    #     text = f"{recipe['title']}\n"\
-    #     f"Инструкция приготовления:\n"\
-    #     f"{recipe['guide']}\n"\
-    #     f'Ингредиенты:\n'\
-    #     f"{''.join([ingredient['title']  + nl for ingredient in recipe['ingredients']])}"
-    #     imgURL = recipe['image']
-    #     urllib.request.urlretrieve(imgURL, "./media/local-filename.jpg")# Надо не только Jpg сделать
-    # else:
     recipe = get_recipes(telegram_id)
     text = f"{recipe[click_counter['new_recipe']]['title']}\n"\
     f"Инструкция приготовления:\n"\
@@ -56,7 +42,7 @@ def get_recipes_count(count, telegram_id, bool):
         tries.append(0) 
         time.sleep(60)
         return 'Вы можете получить рецепт'
-    clicks +=1 # 1
+    clicks +=1 
     tries.append(clicks)    
     return text
 
@@ -100,13 +86,14 @@ async def choose_period(cb_query: types.CallbackQuery):
     amount = cb_query.data
     remember_choice['recipes_count'] = amount
 
+
 async def choose_recipe(cb_query: types.CallbackQuery):
     number = int(re.findall('\d+', remember_choice['recipes_count'])[0])
     text = get_recipes_count(number, cb_query.from_user.id, True)
     await bot.send_photo(cb_query.from_user.id, photo=open("./media/local-filename.jpg",'rb'), caption=text, reply_markup=select_rating)
     if number - tries[0] == 0:
-        await bot.send_message(cb_query.from_user.id, 'ПОДОЖДИТЕ СУТКИ🙃')
-        # await cb_query.message.answer('ПОДОЖДИТЕ 1 МИНУТУ! 🙃')
+        await bot.send_message(cb_query.from_user.id, 'ПОДОЖДИТЕ МИНУТУ🙃')
+
 
 async def set_rating(cb_query: types.CallbackQuery):
     inner_buttons = []
@@ -115,6 +102,7 @@ async def set_rating(cb_query: types.CallbackQuery):
             inner_buttons.append(inline_keyboard[0])
     await bot.edit_message_reply_markup(cb_query.message.chat.id, cb_query.message.message_id, reply_markup=InlineKeyboardMarkup(resize_keyboard=True).add(inner_buttons[0]))
     send_rating(cb_query.data, cb_query.from_user.id, recipe_id.pop())
+
 
 if __name__ == '__main__':  
     executor.start_polling(dp)

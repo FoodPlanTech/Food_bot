@@ -1,13 +1,8 @@
-from aiogram.types import ReplyKeyboardRemove, \
-    ReplyKeyboardMarkup, KeyboardButton, \
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, \
     InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from requests_for_bot import get_preferences, get_subscribtions
 
-
-
-# from requests_for_bot import get_preferences
-import requests
 
 racion_id_buttons=[]
 subscribtion_id_buttons=[]
@@ -51,7 +46,6 @@ select_calories = InlineKeyboardMarkup(inline_keyboard=[
     ],
 ])
 
-
 amount = [{'id': 1, 'title': '1 рецепт'},
           {'id': 2, 'title': '2 рецепта'},
           {'id': 3, 'title': '3 рецепта'},
@@ -62,27 +56,6 @@ for quantity in amount:
         amount_list.append([InlineKeyboardButton(text=quantity['title'], callback_data=f'quantity{quantity["id"]}')])
         select_dishes = InlineKeyboardMarkup(inline_keyboard=amount_list)
 select_dishes = select_dishes
-
-# select_dishes = InlineKeyboardMarkup(inline_keyboard=[
-#     [
-#         InlineKeyboardButton(
-#             text='Белая',
-#             callback_data='period'
-#         )
-#     ],
-#     [
-#         InlineKeyboardButton(
-#             text='Синяя',
-#             callback_data='period'
-#         )
-#     ],
-#     [
-#         InlineKeyboardButton(
-#             text='Красная',
-#             callback_data='period'
-#         )
-#     ]
-# ])
 
 select_rating = InlineKeyboardMarkup(inline_keyboard=[
     [
@@ -106,12 +79,6 @@ for pref in preferences:
         preferences_list.append([InlineKeyboardButton(text = pref['title'], callback_data = f'pref{pref["id"]}')])
         racion_kb = InlineKeyboardMarkup(inline_keyboard = preferences_list)
 select_racion = racion_kb
-
-# one_dish = InlineKeyboardButton('Белая', callback_data='period')
-# two_dishes = InlineKeyboardButton('Синяя', callback_data='period')
-# three_dishes = InlineKeyboardButton('Красная', callback_data='period') 
-# dishes_kb = InlineKeyboardMarkup(resize_keyboard=True).add(one_dish, two_dishes, three_dishes)
-
 
 subscribtions = get_subscribtions()
 subscribtions_list = []

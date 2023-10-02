@@ -15,7 +15,7 @@ dp = Dispatcher(bot)
 async def process_callback_subscribe(cb_query: types.CallbackQuery):
     subscription_id = cb_query.data
     remember_choice['subscription_id'] = re.findall('\d+',subscription_id)[0]
-    price = subscription_price[int(remember_choice['subscription_id']) - 1] * 1000
+    price = subscription_price[int(remember_choice['subscription_id']) - 1] * 100
     await bot.send_invoice(
         chat_id=cb_query.message.chat.id,
         title='Подписка',
@@ -50,10 +50,6 @@ async def pre_checkout_query(pre_checkout_query: PreCheckoutQuery):
     await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 async def successfull_payment(message: Message):
-    print(message.from_user.id, \
-          re.findall('\d+', remember_choice['preference_ids'])[0],\
-          remember_choice['subscription_id'],\
-          [re.findall('\d+', remember_choice['recipes_count'])[0]])
     send_subscriber_information(message.from_user.id,
                                 [re.findall('\d+', remember_choice['preference_ids'])[0]],
                                 remember_choice['subscription_id'], 
